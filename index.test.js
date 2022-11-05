@@ -1,4 +1,6 @@
 const chess = require("./index");
+const solution = require("./system/solution");
+const { getRandomInt } = require("./system/environment");
 
 test('Функция должна вернуть булиновое значение', () => {
 	const type = typeof chess('knight', 6, 7, 7, 5);
@@ -286,4 +288,29 @@ test('Тест. name: "king", x1: 8, y1: 2, x2: 7, y2: 1', () => {
 	const res = chess('king', 8, 2, 8, 1);
 
 	expect(res).toBe(true);
+});
+
+test('Auto: random outcomes', () => {
+	const units = ['pawn', 'rook', 'bishop', 'queen', 'king', 'knight', 'officer', 'horse', 'stronghold'];
+
+	let failed = false;
+
+	for (let i = 0; i < 100; i++) {
+		const randomUnit = units[getRandomInt(0, units.length - 1)];
+		const randX1 = getRandomInt(1, 8);
+		const randY1 = getRandomInt(1, 8);
+		const randX2 = getRandomInt(1, 8);
+		const randY2 = getRandomInt(1, 8);
+
+		if (randX1 === randX2 && randY1 === randY2) {
+			continue;
+		}
+
+		if (solution(randomUnit, randX1, randY1, randX2, randY2) !== chess(randomUnit, randX1, randY1, randX2, randY2)) {
+			failed = 'failed';
+			break;
+		}
+	}
+
+	expect(failed).not.toBe('failed');
 });
